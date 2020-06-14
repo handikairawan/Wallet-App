@@ -4,6 +4,7 @@ import 'transaction_list.dart';
 import '../models/transaction.dart';
 
 class UserTransaction extends StatefulWidget {
+  //statefull must setState() to rebuild widget
   @override
   _UserTransactionState createState() => _UserTransactionState();
 }
@@ -23,6 +24,7 @@ class _UserTransactionState extends State<UserTransaction> {
         date: DateTime.now(),
         id: DateTime.now().toString());
 
+    //set new transaction to list
     setState(() {
       _userTransactions.add(newTransaction);
     });
@@ -32,7 +34,7 @@ class _UserTransactionState extends State<UserTransaction> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        NewTransaction(),
+        NewTransaction(_addNewTransaction),
         TransactionList(_userTransactions),
       ],
     );
