@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:walletapp/widgets/chart.dart';
 import 'models/transaction.dart';
 import 'widgets/new_transaction.dart';
 import 'widgets/transaction_list.dart';
+import 'widgets/chart.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,11 +28,11 @@ class MyApp extends StatelessWidget {
                 ),
           ),
           textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
-                  fontFamily: 'Product Sans',
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold),
-          )),
+                title: TextStyle(
+                    fontFamily: 'Product Sans',
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+              )),
     );
   }
 }
@@ -42,11 +44,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
-    Transaction(
-        id: '1', title: 'Order GoFood', amount: 20.000, date: DateTime.now()),
-    Transaction(
-        id: '2', title: 'Top Up OVO', amount: 50.000, date: DateTime.now()),
+//    Transaction(
+//        id: '1', title: 'Order GoFood', amount: 20.000, date: DateTime.now()),
+//    Transaction(
+//        id: '2', title: 'Top Up OVO', amount: 50.000, date: DateTime.now()),
   ];
+
+  List<Transaction> get _recentTransaction {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(
+        Duration(days: 7),
+      ));
+    }).toList();
+  }
 
   void _addNewTransaction(String title, double amount) {
     final newTransaction = Transaction(
@@ -93,13 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           //mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                child: Text('Chart'),
-                elevation: 5,
-              ),
-            ),
+            Chart(_recentTransaction),
             TransactionList(_userTransactions),
           ],
         ),
