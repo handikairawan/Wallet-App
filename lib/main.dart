@@ -13,6 +13,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Wallet App',
       home: MyHomePage(),
+      theme: ThemeData(
+          primarySwatch: Colors.teal,
+          accentColor: Colors.tealAccent,
+          fontFamily: 'Product Sans',
+          appBarTheme: AppBarTheme(
+            textTheme: ThemeData.light().textTheme.copyWith(
+                  title: TextStyle(
+                      fontFamily: 'Usuazi',
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold),
+                ),
+          ),
+          textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(
+                  fontFamily: 'Product Sans',
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold),
+          )),
     );
   }
 }
@@ -62,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.teal,
         title: Text('Home'),
         actions: <Widget>[
           IconButton(
@@ -80,7 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
               width: double.infinity,
               child: Card(
                 child: Text('Chart'),
-                color: Colors.teal,
                 elevation: 5,
               ),
             ),
@@ -92,7 +108,6 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => _popUpAddTransaction(context),
-        backgroundColor: Colors.teal,
       ),
     );
   }
