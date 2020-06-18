@@ -31,52 +31,74 @@ class TransactionList extends StatelessWidget {
                 ),
               ],
             )
-          : ListView.builder(
-              //listview must declared or use parent height, builder just render list in screen
-              itemBuilder: (context, index) {
-                return Card(
-                  elevation: 3,
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).accentColor,
-                            border: Border.all(
-                                color: Theme.of(context).accentColor,
-                                width: 2)),
-                        padding: EdgeInsets.all(5),
-                        child: Text(
-                          'Rp.${transaction[index].amount.toStringAsFixed(0)}', //toStringAsFixed to show fixed number amount ex: $12.0000 ->$12.00
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor),
-                        ),
+          : Card(
+              elevation: 8,
+              shadowColor: Colors.tealAccent[700],
+              child: ListView.builder(
+                //listview must declared or use parent height, builder just render list in screen
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FittedBox(
+                            child: Text('\$${transaction[index].amount}')),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(transaction[index].title,
-                              style: Theme.of(context).textTheme.title
-                              //                         TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                              ),
-                          Text(
-                            DateFormat.jm().format(transaction[index].date),
-                            style: TextStyle(color: Colors.blueGrey),
-                          ),
-                          Text(
-                            DateFormat.yMMMEd().format(transaction[index].date),
-                            style: TextStyle(color: Colors.blueGrey),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-              itemCount: transaction.length,
+                    ),
+                    title: Text(
+                      transaction[index].title,
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    subtitle: Text(
+                        DateFormat.yMMMEd().format(transaction[index].date)),
+                    trailing:
+                        Text(DateFormat.jm().format(transaction[index].date)),
+                  );
+                  // return Card(
+                  //   elevation: 3,
+                  //   child: Row(
+                  //     children: <Widget>[
+                  //       Container(
+                  //         margin:
+                  //             EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  //         decoration: BoxDecoration(
+                  //             color: Theme.of(context).accentColor,
+                  //             border: Border.all(
+                  //                 color: Theme.of(context).accentColor,
+                  //                 width: 2)),
+                  //         padding: EdgeInsets.all(5),
+                  //         child: Text(
+                  //           'Rp.${transaction[index].amount.toStringAsFixed(0)}', //toStringAsFixed to show fixed number amount ex: $12.0000 ->$12.00
+                  //           style: TextStyle(
+                  //               fontWeight: FontWeight.bold,
+                  //               fontSize: 20,
+                  //               color: Theme.of(context).primaryColor),
+                  //         ),
+                  //       ),
+                  //       Column(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: <Widget>[
+                  //           Text(transaction[index].title,
+                  //               style: Theme.of(context).textTheme.title
+                  //               //                         TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  //               ),
+                  //           Text(
+                  //             DateFormat.jm().format(transaction[index].date),
+                  //             style: TextStyle(color: Colors.blueGrey),
+                  //           ),
+                  //           Text(
+                  //             DateFormat.yMMMEd().format(transaction[index].date),
+                  //             style: TextStyle(color: Colors.blueGrey),
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ],
+                  //   ),
+                  // );
+                },
+                itemCount: transaction.length,
+              ),
             ),
     );
   }
