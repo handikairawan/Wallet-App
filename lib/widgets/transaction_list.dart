@@ -12,26 +12,28 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      height: 450,
+      // height: MediaQuery.of(context).size.height * 0.6, //set height of trasanction list to 60% of height
       child: transaction.isEmpty
-          ? Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                    height: 200,
-                    child: Image.asset('assets/images/not_found.png',
-                        fit: BoxFit.cover)),
-                SizedBox(
-                  height: 30,
-                ),
-                Text(
-                  'Can\'t find any transaction!',
-                  style: Theme.of(context).textTheme.title,
-                ),
-              ],
-            )
+          ? LayoutBuilder(builder: (context, constraint) {
+              return Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                      height: constraint.maxHeight * 0.6,
+                      child: Image.asset('assets/images/not_found.png',
+                          fit: BoxFit.cover)),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    'Can\'t find any transaction!',
+                    style: Theme.of(context).textTheme.title,
+                  ),
+                ],
+              );
+            })
           : Card(
               elevation: 8,
               shadowColor: Colors.tealAccent[700],

@@ -45,10 +45,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
-//    Transaction(
-//        id: '1', title: 'Order GoFood', amount: 20.000, date: DateTime.now()),
-//    Transaction(
-//        id: '2', title: 'Top Up OVO', amount: 50.000, date: DateTime.now()),
+    Transaction(
+        id: '1', title: 'Order GoFood', amount: 20.000, date: DateTime.now()),
+    Transaction(
+        id: '2', title: 'Top Up OVO', amount: 50.000, date: DateTime.now()),
   ];
 
   List<Transaction> get _recentTransaction {
@@ -94,26 +94,67 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  bool _showChart = false;
+
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final appbar = AppBar(
+      centerTitle: true,
+      title: Text('Home'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _popUpAddTransaction(context),
+        )
+      ],
+    );
+    final transactionListWidget = Container(
+        height: (MediaQuery.of(context).size.height -
+                appbar.preferredSize.height -
+                MediaQuery.of(context).padding.top) *
+            0.7, //MediaQuery.of(context).padding.top means status bar
+        child: TransactionList(_userTransactions, _deleteTransaction));
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Home'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _popUpAddTransaction(context),
-          )
-        ],
-      ),
+      appBar:
+          appbar, //appbar moved in variable final appbar, so appbar can use as variable
       body: SingleChildScrollView(
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransaction),
-            TransactionList(_userTransactions, _deleteTransaction),
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Show Chart'),
+                  Switch(
+                      value: _showChart,
+                      onChanged: (val) {
+                        setState(() {
+                          _showChart = val;
+                        });
+                      })
+                ],
+              ),
+            if (!isLandscape)
+              Container(
+                  height: (MediaQuery.of(context).size.height -
+                          appbar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.3, //appbar preferedsize to take height from appbar
+                  child: Chart(_recentTransaction)),
+            if (!isLandscape) transactionListWidget,
+            if (isLandscape)
+              _showChart
+                  ? Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appbar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.7, //appbar preferedsize to take height from appbar
+                      child: Chart(_recentTransaction))
+                  : transactionListWidget
           ],
         ),
       ),

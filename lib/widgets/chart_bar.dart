@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class ChartBar extends StatelessWidget {
   final String label;
@@ -8,46 +9,50 @@ class ChartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-//        Padding(padding: EdgeInsets.all(10)),
-        Container(
-            height: 15,
-            child: FittedBox(
-                child: Text('\$${spendingAmount.toStringAsFixed(0)}'))),
-        SizedBox(
-          height: 5,
-        ),
-        Container(
-          height: 60,
-          width: 15,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.teal, width: 2),
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10)),
+    return LayoutBuilder(
+      builder: (context, Constraints) {
+        //layout builder to set constraints height of tree widget
+        return Column(
+          children: <Widget>[
+            Container(
+                height: Constraints.maxHeight * 0.15,
+                child: FittedBox(
+                    child: Text('\$${spendingAmount.toStringAsFixed(0)}'))),
+            SizedBox(
+              height: Constraints.maxHeight * 0.05,
+            ),
+            Container(
+              height:
+                  Constraints.maxHeight * 0.6, //set height to 60% of max height
+              width: 15,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.teal, width: 2),
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  FractionallySizedBox(
+                    heightFactor: spendingPercent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  )
+                ],
               ),
-              FractionallySizedBox(
-                heightFactor: spendingPercent,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        Text(label),
-        // SizedBox(
-        //   height: 10,
-        // )
-      ],
+            ),
+            SizedBox(
+              height: Constraints.maxHeight * 0.05,
+            ),
+            Container(
+                height: Constraints.maxHeight * 0.15,
+                child: FittedBox(child: Text(label))),
+          ],
+        );
+      },
     );
   }
 }
