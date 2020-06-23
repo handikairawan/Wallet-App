@@ -1,6 +1,6 @@
 # walletapp
 
-A new Flutter application.
+Personal wallet from your phone.
 
 ## Getting Started
 
