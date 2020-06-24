@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
 import 'package:walletapp/widgets/chart.dart';
 import 'models/transaction.dart';
 import 'widgets/new_transaction.dart';
@@ -102,26 +104,37 @@ class _MyHomePageState extends State<MyHomePage> {
     final mediaQuery =
         MediaQuery.of(context); //make MediaQuery to variabele, more efficient
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final appbar = AppBar(
-      centerTitle: true,
-      title: Text('Home'),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () => _popUpAddTransaction(context),
-        )
-      ],
-    );
+    final PreferredSizeWidget appbar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text('Home'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                GestureDetector(
+                    child: Icon(CupertinoIcons.add),
+                    onTap: () => _popUpAddTransaction(context))
+              ],
+            ),
+          )
+        : AppBar(
+            centerTitle: true,
+            title: Text('Home'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _popUpAddTransaction(context),
+              )
+            ],
+          );
     final transactionListWidget = Container(
         height: (mediaQuery.size.height -
                 appbar.preferredSize.height -
                 mediaQuery.padding.top) *
             0.7, //MediaQuery.of(context).padding.top means status bar
         child: TransactionList(_userTransactions, _deleteTransaction));
-    return Scaffold(
-      appBar:
-          appbar, //appbar moved in variable final appbar, so appbar can use as variable
-      body: SingleChildScrollView(
+    final bodyPage = SafeArea(
+      //add safearea, adjusting top page with navigation bar in ios
+      child: SingleChildScrollView(
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -130,7 +143,10 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Show Chart'),
+                  Text(
+                    'Show Chart',
+                    style: Theme.of(context).textTheme.title,
+                  ),
                   Switch.adaptive(
                       //set adaptive make toggle switch different look in ios
                       activeColor: Theme.of(context).accentColor,
@@ -162,14 +178,24 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton:
-          Platform.isIOS //render empty container if build in ios
-              ? Container()
-              : FloatingActionButton(
-                  child: Icon(Icons.add),
-                  onPressed: () => _popUpAddTransaction(context),
-                ),
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: bodyPage,
+          )
+        : Scaffold(
+            appBar:
+                appbar, //appbar moved in variable final appbar, so appbar can use as variable
+            body: bodyPage,
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            floatingActionButton:
+                Platform.isIOS //render empty container if build in ios
+                    ? Container()
+                    : FloatingActionButton(
+                        child: Icon(Icons.add),
+                        onPressed: () => _popUpAddTransaction(context),
+                      ),
+          );
   }
 }
