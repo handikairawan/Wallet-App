@@ -28,7 +28,8 @@ class _NewTransactionState extends State<NewTransaction> {
     if (submitTitle.isEmpty || submitAmount <= 0 || selectedDate == null) {
       return;
     }
-    widget.addNewTransaction(submitTitle, submitAmount, selectedDate);//sent data to main.dart 
+    widget.addNewTransaction(
+        submitTitle, submitAmount, selectedDate); //sent data to main.dart
 
     Navigator.of(context).pop();
   }
@@ -51,66 +52,73 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: 'Title'),
-              controller: titleController,
-              onSubmitted: (_) =>
-                  submitTransaction(), // underscore in bracket for ignored
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) => submitTransaction(),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: <Widget>[
-                  //expanded same as flexible->flexfit.tight
-                  Expanded(
-                    child: Text(selectedDate == null
-                        ? 'No Date Chosen!'
-                        : 'Date: ${DateFormat.yMEd().format(selectedDate)}'),
-                  ),
-                  FlatButton(
-                    onPressed: _datePicker,
+    return SingleChildScrollView(
+      //make form in modalbottomsheet scrollable
+      child: Card(
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 10,
+              right: 20,
+              left: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(labelText: 'Title'),
+                controller: titleController,
+                onSubmitted: (_) =>
+                    submitTransaction(), // underscore in bracket for ignored
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Amount'),
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) => submitTransaction(),
+              ),
+              Container(
+                height: 70,
+                child: Row(
+                  children: <Widget>[
+                    //expanded same as flexible->flexfit.tight
+                    Expanded(
+                      child: Text(selectedDate == null
+                          ? 'No Date Chosen!'
+                          : 'Date: ${DateFormat.yMEd().format(selectedDate)}'),
+                    ),
+                    FlatButton(
+                      onPressed: _datePicker,
+                      child: Text(
+                        selectedDate == null ? 'Choose Date' : 'Change Date',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      textColor: Theme.of(context).primaryColor,
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                alignment: AlignmentDirectional.bottomCenter,
+                child: RaisedButton(
+                    color: Theme.of(context).primaryColor,
                     child: Text(
-                      selectedDate == null ? 'Choose Date' : 'Change Date',
+                      'Add Transaction',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    textColor: Theme.of(context).primaryColor,
-                  )
-                ],
+                    textColor: Theme.of(context).textTheme.button.color,
+                    onPressed: submitTransaction
+                    // (){
+                    //   widget.addNewTransaction(
+                    //       titleController.text,
+                    //       double.parse(amountController
+                    //           .text)); //convert string to double with double parse
+                    // },
+                    ),
               ),
-            ),
-            Container(
-              alignment: AlignmentDirectional.bottomCenter,
-              child: RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  child: Text(
-                    'Add Transaction',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  textColor: Theme.of(context).textTheme.button.color,
-                  onPressed: submitTransaction
-                  // (){
-                  //   widget.addNewTransaction(
-                  //       titleController.text,
-                  //       double.parse(amountController
-                  //           .text)); //convert string to double with double parse
-                  // },
-                  ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:walletapp/widgets/chart.dart';
 import 'models/transaction.dart';
@@ -98,8 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery =
+        MediaQuery.of(context); //make MediaQuery to variabele, more efficient
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appbar = AppBar(
       centerTitle: true,
       title: Text('Home'),
@@ -111,9 +113,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
     final transactionListWidget = Container(
-        height: (MediaQuery.of(context).size.height -
+        height: (mediaQuery.size.height -
                 appbar.preferredSize.height -
-                MediaQuery.of(context).padding.top) *
+                mediaQuery.padding.top) *
             0.7, //MediaQuery.of(context).padding.top means status bar
         child: TransactionList(_userTransactions, _deleteTransaction));
     return Scaffold(
@@ -124,12 +126,14 @@ class _MyHomePageState extends State<MyHomePage> {
           //mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (isLandscape)
+            if (isLandscape) //can use if() statement but dont use curly {} cause its a special "if"
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('Show Chart'),
-                  Switch(
+                  Switch.adaptive(
+                      //set adaptive make toggle switch different look in ios
+                      activeColor: Theme.of(context).accentColor,
                       value: _showChart,
                       onChanged: (val) {
                         setState(() {
@@ -140,18 +144,18 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             if (!isLandscape)
               Container(
-                  height: (MediaQuery.of(context).size.height -
+                  height: (mediaQuery.size.height -
                           appbar.preferredSize.height -
-                          MediaQuery.of(context).padding.top) *
+                          mediaQuery.padding.top) *
                       0.3, //appbar preferedsize to take height from appbar
                   child: Chart(_recentTransaction)),
             if (!isLandscape) transactionListWidget,
             if (isLandscape)
               _showChart
                   ? Container(
-                      height: (MediaQuery.of(context).size.height -
+                      height: (mediaQuery.size.height -
                               appbar.preferredSize.height -
-                              MediaQuery.of(context).padding.top) *
+                              mediaQuery.padding.top) *
                           0.7, //appbar preferedsize to take height from appbar
                       child: Chart(_recentTransaction))
                   : transactionListWidget
@@ -159,10 +163,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _popUpAddTransaction(context),
-      ),
+      floatingActionButton:
+          Platform.isIOS //render empty container if build in ios
+              ? Container()
+              : FloatingActionButton(
+                  child: Icon(Icons.add),
+                  onPressed: () => _popUpAddTransaction(context),
+                ),
     );
   }
 }
