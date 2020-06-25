@@ -60,8 +60,8 @@ class TransactionList extends StatelessWidget {
                         ? FlatButton.icon(
                             onPressed: () =>
                                 deleteTransaction(transaction[index].id),
-                            icon: Icon(Icons.delete),
-                            label: Text('Delete'),
+                            icon: const Icon(Icons.delete),
+                            label: const Text('Delete'),
                             textColor: Theme.of(context).errorColor,
                           )
                         : IconButton(
@@ -71,47 +71,6 @@ class TransactionList extends StatelessWidget {
                                 deleteTransaction(transaction[index].id),
                           ),
                   );
-                  // return Card(
-                  //   elevation: 3,
-                  //   child: Row(
-                  //     children: <Widget>[
-                  //       Container(
-                  //         margin:
-                  //             EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  //         decoration: BoxDecoration(
-                  //             color: Theme.of(context).accentColor,
-                  //             border: Border.all(
-                  //                 color: Theme.of(context).accentColor,
-                  //                 width: 2)),
-                  //         padding: EdgeInsets.all(5),
-                  //         child: Text(
-                  //           'Rp.${transaction[index].amount.toStringAsFixed(0)}', //toStringAsFixed to show fixed number amount ex: $12.0000 ->$12.00
-                  //           style: TextStyle(
-                  //               fontWeight: FontWeight.bold,
-                  //               fontSize: 20,
-                  //               color: Theme.of(context).primaryColor),
-                  //         ),
-                  //       ),
-                  //       Column(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         children: <Widget>[
-                  //           Text(transaction[index].title,
-                  //               style: Theme.of(context).textTheme.title
-                  //               //                         TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                  //               ),
-                  //           Text(
-                  //             DateFormat.jm().format(transaction[index].date),
-                  //             style: TextStyle(color: Colors.blueGrey),
-                  //           ),
-                  //           Text(
-                  //             DateFormat.yMMMEd().format(transaction[index].date),
-                  //             style: TextStyle(color: Colors.blueGrey),
-                  //           )
-                  //         ],
-                  //       ),
-                  //     ],
-                  //   ),
-                  // );
                 },
                 itemCount: transaction.length,
               ),

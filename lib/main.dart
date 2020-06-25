@@ -99,12 +99,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool _showChart = false;
 
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery =
-        MediaQuery.of(context); //make MediaQuery to variabele, more efficient
-    final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appbar = Platform.isIOS
+  List<Widget> _buildLanscapeMode(
+      MediaQueryData mediaQuery, AppBar appbar, Widget transactionListWidget) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Show Chart',
+            style: Theme.of(context).textTheme.title,
+          ),
+          Switch.adaptive(
+              //set adaptive make toggle switch different look in ios
+              activeColor: Theme.of(context).accentColor,
+              value: _showChart,
+              onChanged: (val) {
+                setState(() {
+                  _showChart = val;
+                });
+              })
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: (mediaQuery.size.height -
+                      appbar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7, //appbar preferedsize to take height from appbar
+              child: Chart(_recentTransaction))
+          : transactionListWidget
+    ];
+  }
+
+  List<Widget> _buildPortraitMode(
+      MediaQueryData mediaQuery, AppBar appbar, Widget transactionListWidget) {
+    return [
+      Container(
+          height: (mediaQuery.size.height -
+                  appbar.preferredSize.height -
+                  mediaQuery.padding.top) *
+              0.3, //appbar preferedsize to take height from appbar
+          child: Chart(_recentTransaction)),
+      transactionListWidget
+    ];
+  }
+
+  Widget _buildAppBar(){
+    return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text('Home'),
             trailing: Row(
@@ -126,6 +167,14 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             ],
           );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery =
+        MediaQuery.of(context); //make MediaQuery to variabele, more efficient
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final PreferredSizeWidget appbar = _buildAppBar();
     final transactionListWidget = Container(
         height: (mediaQuery.size.height -
                 appbar.preferredSize.height -
@@ -140,41 +189,10 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             if (isLandscape) //can use if() statement but dont use curly {} cause its a special "if"
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Show Chart',
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                  Switch.adaptive(
-                      //set adaptive make toggle switch different look in ios
-                      activeColor: Theme.of(context).accentColor,
-                      value: _showChart,
-                      onChanged: (val) {
-                        setState(() {
-                          _showChart = val;
-                        });
-                      })
-                ],
-              ),
+              ..._buildLanscapeMode(mediaQuery, appbar, transactionListWidget),
             if (!isLandscape)
-              Container(
-                  height: (mediaQuery.size.height -
-                          appbar.preferredSize.height -
-                          mediaQuery.padding.top) *
-                      0.3, //appbar preferedsize to take height from appbar
-                  child: Chart(_recentTransaction)),
-            if (!isLandscape) transactionListWidget,
-            if (isLandscape)
-              _showChart
-                  ? Container(
-                      height: (mediaQuery.size.height -
-                              appbar.preferredSize.height -
-                              mediaQuery.padding.top) *
-                          0.7, //appbar preferedsize to take height from appbar
-                      child: Chart(_recentTransaction))
-                  : transactionListWidget
+              ..._buildPortraitMode(mediaQuery, appbar,
+                  transactionListWidget), //use spread operator(...), convert list of widget to single widget
           ],
         ),
       ),
